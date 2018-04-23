@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class SocketService {
-    private url: string = 'http://localhost:3000';
+    private url: string = '/';  // http://localhost:3000
     private host: string = window.location.protocol + "//" + window.location.hostname + ":" + 3000;
     private socket: any;
 
@@ -37,7 +37,7 @@ export class SocketService {
     }
 */
     connect() {
-      this.socket = io(this.host);
+      this.socket = io(this.url);  //this.host
       console.log('Connect');
     }
 

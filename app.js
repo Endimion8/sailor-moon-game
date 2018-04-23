@@ -14,7 +14,7 @@ app.lastPlayderID = 0;
 
 const users = require('./routes/users');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;  // Обычно: 3000
 
 // Connect to Database
 mongoose.connect(config.database);
