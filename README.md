@@ -9,4 +9,8 @@
 * Сервер на NodeJS с использованием ExpressJS
 * Игра сделана с использованием библиотеки Phaser
 * Для хранения данных пользователей используется MongoDB (Mondgoose)
+* Деплой приложения на Heroku
+
+[Ознакомиться с приложением здесь](https://sailor-moon-online-game.herokuapp.com)
+
 
