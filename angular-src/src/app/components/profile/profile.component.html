@@ -1,0 +1,15 @@
+<div *ngIf="user">
+    <h2 class="page-header">{{user.name}}</h2>
+    <ul class="list-group">
+      <li class="list-group-item">Username : {{user.username}}</li>
+      <li class="list-group-item">Email : {{user.email}}</li>
+        <li class="list-group-item" *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}">
+            <a class="nav-link" [routerLink]="['/game']">Game </a>
+        </li>
+    </ul>
+    <h2>Активные пользователи</h2>
+    <ul class="list-group" id='activePlayers' >
+      <li class="list-group-item" *ngFor="let playerName of players.playersNames ">{{playerName}}</li>
+      <!-- <li class="list-group-item">{{players.playersNames}}</li> -->
+    </ul>
+  </div>
