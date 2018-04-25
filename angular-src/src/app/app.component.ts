@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.socketService.connect();
+    this.socketService.askNewPlayer();
     console.log('AppComponent OnInit');
   }
 

@@ -1,13 +1,14 @@
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import * as io from "socket.io-client";
+import * as io from 'socket.io-client';
 
 import { AuthService } from './auth.service';
 
+
 @Injectable()
 export class SocketService {
-    private url: string = 'http://localhost:3000';
-    private host: string = window.location.protocol + "//" + window.location.hostname + ":" + 3000;
+    private url = 'http://localhost:3000';
+    private host: string = window.location.protocol + '//' + window.location.hostname + ':' + 3000;
     private socket: any;
 
     constructor(private authService: AuthService) {
@@ -18,7 +19,7 @@ export class SocketService {
         //     console.log(`ERROR: "${error}" (${this.host})`);
         // });
     }
-/* 
+/*
     connect () {
         this.socket.connect();
     }
@@ -38,7 +39,13 @@ export class SocketService {
 */
     connect() {
       this.socket = io(this.host);
-      console.log('Connect');
+      this.socket.on('disconnect', () => {  // При дисконнекте будем просить удалить нас из активных
+        if (!this.authService.user) { // Если мы не залогиненные, то ничего не делаем
+            return;
+        };
+        this.socket.emit('askToRemove');
+      });
+      console.log('Socket connects');
     }
 
     on(event_name) {
@@ -49,8 +56,8 @@ export class SocketService {
                 observer.next(data);
             });
         });
-    } 
-/* 
+    }
+/*
     private connected() {
         console.log('Connected');
     }
@@ -71,27 +78,34 @@ export class SocketService {
       return this.on('allPlayers');
     }
 
-    askNewPlayer() {              // Когда логинимся, делаем запрос на добавление нас к активным пользователям
-      this.authService.getProfile().subscribe(profile => {
-        let playerInfo = {name: profile.user.name};
-        console.log(playerInfo);
-        this.socket.emit('askNewPlayer', playerInfo);
-        console.log('Запрос на логин отправлен');
-      },
-       err => {
-         console.log(err);
-         return false;
-       });
+    askNewPlayer() {              // Делаем запрос на добавление нас к активным пользователям
+        this.authService.getProfile().subscribe(profile => {  //  Получаем данные о самом пользователе, в том числе и приватные
+            if (!profile.user) { // Если мы не залогиненные, то ничего не делаем
+                console.log(`Наш юзер: ${profile.user}`);
+                  return;
+                };
+
+                console.log(`Наш юзер: ${profile.user}`);
+                console.log(`Наш юзерID: ${profile.user._id}`);
+                const playerInfo = {name: profile.user.name, id: profile.user._id};
+                console.log(playerInfo);
+                this.socket.emit('askNewPlayer', playerInfo);
+                console.log('Запрос на логин отправлен');
+          },
+           err => {
+             console.log('Ошибочка');
+             console.log(err);
+             return false;
+           });
+      
     }
 
-    askAllPlayers() {       
+    askAllPlayers() {
       this.socket.emit('askAllPlayers');
       console.log('Попросили всех активных');
     }
 
     askToRemoveAs() {       // Когда разлогинимся, попросим сервер удалить нас из списка активных
-      this.socket.emit('askToRemove', 'myMessage');
+      this.socket.emit('askToRemove');
     }
-
-
 }

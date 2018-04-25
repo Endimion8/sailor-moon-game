@@ -10,8 +10,6 @@ const socketIO = require('socket.io');
 
 const app = express();
 
-app.lastPlayderID = 0;
-
 const users = require('./routes/users');
 
 const port = process.env.PORT || 3000;
@@ -69,7 +67,7 @@ io.on('connection', (socket) => {
     socket.on('askNewPlayer', (playerInfo) => {  // когда приходит запрос на добавление нового пользователя
         console.log('Client logged in');
         socket.player = {                        // playerInfo содержит имя, список достижений и прочие данные
-            id: app.lastPlayderID++,
+            id: playerInfo.id,
             name: playerInfo.name,
         };
         console.log(socket.player.id);
@@ -83,11 +81,11 @@ io.on('connection', (socket) => {
     });
 
 
-    socket.on('askToRemove', (message) => {                            // Когда кто-то разлогинился
+    socket.on('askToRemove', () => {                            // Когда кто-то разлогинился
         console.log('Client logged out');
-        console.log(message);
-        if (socket.player)
-        socket.broadcast.emit('removePlayer', socket.player.id); // Остальных просим удалить его из активных
+        if (socket.player) {
+            socket.broadcast.emit('removePlayer', socket.player.id); // Остальных просим удалить его из активных
+        }
     });
 
     socket.on('disconnect', () => {             
@@ -96,12 +94,12 @@ io.on('connection', (socket) => {
   });
 
   function getAllPlayers() {   // Получаем массив подключенных пользователей
-    var players = []
-    Object.keys(io.sockets.connected).forEach(function (socketID) {
-        var player = io.sockets.connected[socketID].player
-        if (player) players.push(player)
+    var players = [];
+    Object.keys(io.sockets.connected).forEach(function (socketID) {   // Проверять пользователей на униакльность!!!
+        var player = io.sockets.connected[socketID].player;
+        if (player) players.push(player);
     })
-    return players
+    return players;
  }
 
  

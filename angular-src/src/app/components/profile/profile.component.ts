@@ -15,13 +15,14 @@ interface PlayersObject {
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  user:Object;
+  user: Object;
 
   players: PlayersObject = {
     playersIDs: [],
     playersNames:[]
   };  // Содержит всех активных пользователей
   playersNames: Array<string> = [];
+
 
 
   constructor(private authService:AuthService, private router:Router, private socketService: SocketService) { }
@@ -36,21 +37,23 @@ export class ProfileComponent implements OnInit {
        return false;
      });
 
-     this.socketService.askAllPlayers();
-
      this.socketService.onNewPlayer().subscribe(playerInfo => {
        this.addNewPlayer(playerInfo);
      });
 
      this.socketService.onAllPlayers().subscribe( playersArr => {
-       for (let i = 0; i< playersArr.length; i++) {
+      console.log('AllPlayers:');
+       for (let i = 0; i < playersArr.length; i++) {
          this.addNewPlayer(playersArr[i]);
+         console.log(playersArr[i]);
        }
      });
 
      this.socketService.onRemovePlayer().subscribe(playerID => {
       this.removePlayer(playerID);
      });
+
+     this.socketService.askAllPlayers();
   }
 
   addNewPlayer(playerInfoObj) {
