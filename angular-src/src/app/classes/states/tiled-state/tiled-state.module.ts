@@ -142,7 +142,7 @@ export class TiledStateModule extends Phaser.State {
       // create object according to its type
       switch (object.type) {
       case "player":
-          //prefab = new Mars(this, position, object.properties);  // здесь будем отправлять запрос на сервер, чтобы создать объекты
+          prefab = new Mars(this, this.start_pos, this.player_properties, '', true);  // здесь будем отправлять запрос на сервер, чтобы создать объекты
           break;
       case "ground_enemy":
           prefab = new Enemy(this, position, object.properties, object.properties.texture); // на сервере проверим, были ли объекты уже созданы

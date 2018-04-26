@@ -477,7 +477,7 @@ var TiledStateModule = (function (_super) {
         // create object according to its type
         switch (object.type) {
             case "player":
-                //prefab = new Mars(this, position, object.properties);  // здесь будем отправлять запрос на сервер, чтобы создать объекты
+                prefab = new __WEBPACK_IMPORTED_MODULE_4__prefabs_mars__["a" /* Mars */](this, this.start_pos, this.player_properties, '', true); // здесь будем отправлять запрос на сервер, чтобы создать объекты
                 break;
             case "ground_enemy":
                 prefab = new __WEBPACK_IMPORTED_MODULE_5__prefabs_enemy__["a" /* Enemy */](this, position, object.properties, object.properties.texture); // на сервере проверим, были ли объекты уже созданы
