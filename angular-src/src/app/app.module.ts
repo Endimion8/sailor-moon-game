@@ -22,6 +22,10 @@ import {SocketService} from './services/socket.service';
 
 import { AuthGuard } from './guards/auth.guard';
 
+import { TiledStateModule } from './classes/states/tiled-state/tiled-state.module';
+import { BootStateModule } from './classes/states/boot-state/boot-state.module';
+import { LoadingStateModule } from './classes/states/loading-state/loading-state.module';
+
 
 //import {FlashMessagesService} from 'angular2-flash-messages';
 
@@ -50,7 +54,10 @@ const appRouts: Routes = [
     FormsModule,
     HttpModule,
     RouterModule.forRoot(appRouts),
-    FlashMessagesModule
+    FlashMessagesModule,
+    BootStateModule,
+    LoadingStateModule,
+    TiledStateModule
   ],
   providers: [ValidateService, AuthService, SocketService, AuthGuard],
   bootstrap: [AppComponent]

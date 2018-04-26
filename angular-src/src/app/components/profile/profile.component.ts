@@ -6,7 +6,7 @@ import {SocketService} from '../../services/socket.service';
 
 interface PlayersObject {
   playersIDs: Array<Number>;
-  playersNames: Array<string>;
+  playersNames: Array<any>;
 }
 
 @Component({
@@ -60,25 +60,11 @@ export class ProfileComponent implements OnInit {
     this.players.playersIDs.push(playerInfoObj.id);
     this.players.playersNames.push(playerInfoObj.name);
     this.playersNames = this.players.playersNames;
-   // this.addPlayerToView(playerInfoObj.name);
   }
 
   removePlayer(playerID) {
     delete this.players.playersNames[this.players.playersIDs.indexOf(playerID)];
     delete this.players.playersIDs[this.players.playersIDs.indexOf(playerID)];
-  }
-
-  addPlayerToView(playerName) {
-    console.log(playerName);
-    const ul = document.getElementById('activePlayers');
-    if (ul) {
-      const li = document.createElement('li');
-      li.className = 'list-group-item';
-      li.innerHTML = playerName;
-      ul.appendChild(li);
-    }
-    
-
   }
 
 }

@@ -3,8 +3,8 @@ import { Enemy } from './enemy';
 
 export class FlyingEnemy extends Enemy {
 
-    constructor (game_state, position, properties) {
-        super(game_state, position, properties);
+    constructor (game_state, position, properties, texture_name) {
+        super(game_state, position, properties, texture_name);
         
         // flying enemies are not affected by gravity
         this.body.allowGravity = false;

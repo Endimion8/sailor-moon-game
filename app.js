@@ -6,6 +6,9 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 
+const allEnemies = require('./config/objects');
+
+
 const socketIO = require('socket.io');
 
 const app = express();
@@ -64,15 +67,18 @@ const io = socketIO.listen(server);
 io.on('connection', (socket) => {
     console.log('Client connected');
 
+    const currentEnemies = new Set(allEnemies);
+
     socket.on('askNewPlayer', (playerInfo) => {  // когда приходит запрос на добавление нового пользователя
         console.log('Client logged in');
         socket.player = {                        // playerInfo содержит имя, список достижений и прочие данные
             id: playerInfo.id,
             name: playerInfo.name,
+            inGame: false        
         };
         console.log(socket.player.id);
         socket.emit('allPlayers',getAllPlayers());  // новому пользователю отсылаем массив всех пользователей
-        socket.broadcast.emit('newplayer',socket.player);  // остальным шлем, что добавился новый пользователь
+        socket.broadcast.emit('newPlayer',socket.player);  // остальным шлем, что добавился новый пользователь
     });
 
     socket.on('askAllPlayers', () => {      
@@ -88,6 +94,28 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('askNewPlayerGame', (start) => {  // когда приходит запрос на добавление нового игрока
+        console.log('Игрок зашел в игру');
+        if (socket.player) {
+            socket.player.x = start.x;
+            socket.player.y = start.y;
+            if (socket.player.inGame !== undefined) {
+                socket.player.inGame = true;
+            }
+        }
+        console.log(socket.player.id);
+        socket.emit('allPlayersGame',getAllPlayersGame());  // новому пользователю отсылаем массив всех пользователей
+        socket.broadcast.emit('newPlayerGame',socket.player);  // остальным шлем, что добавился новый пользователь
+    });
+
+    socket.on('askToRemoveGame', () => {                            // Когда кто-то разлогинился
+        console.log('Client out of game');
+        if (socket.player) {
+            socket.player.inGame = false;
+            socket.broadcast.emit('removePlayerGame', socket.player.id); // Остальных просим удалить его из активных
+        }
+    });
+
     socket.on('disconnect', () => {             
         console.log('Client DISconnected');
     });
@@ -100,6 +128,17 @@ io.on('connection', (socket) => {
         if (player) players.push(player);
     })
     return players;
+ }
+
+ function getAllPlayersGame() {   // Получаем массив играющих пользователей
+    var players = [];
+    Object.keys(io.sockets.connected).forEach(function (socketID) {   // Проверять пользователей на униакльность!!!
+        var player = io.sockets.connected[socketID].player;
+        if (player && player.inGame) players.push(player);
+    })
+    return players;
+
+    
  }
 
  

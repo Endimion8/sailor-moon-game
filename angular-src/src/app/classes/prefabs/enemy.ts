@@ -7,8 +7,8 @@ export class Enemy extends Prefab {
     walking_distance: any;
     previous_x: any;
 
-    constructor (game_state, position, properties) {
-        super(game_state, position, properties);
+    constructor (game_state, position, properties, texture_name) {
+        super(game_state, position, properties, texture_name);
         
         this.walking_speed = +properties.walking_speed;
         this.walking_distance = +properties.walking_distance;
@@ -25,7 +25,7 @@ export class Enemy extends Prefab {
     };
     
     update() {
-        this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision);
+        this.game_state.game.physics.arcade.collide(this, this.game_state.layers.Ground);
         
         // change the direction if walked the maximum distance
         if (Math.abs(this.x - this.previous_x) >= this.walking_distance) {

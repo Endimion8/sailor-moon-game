@@ -1,4 +1,4 @@
-import  *  as Phaser from 'phaser-ce';
+/* import  *  as Phaser from 'phaser-ce';
 import { Player } from '../prefabs/player';
 import { Enemy } from '../prefabs/enemy';
 import { FlyingEnemy } from '../prefabs/flying-enemy';
@@ -113,3 +113,4 @@ export class TiledState extends Phaser.State {
 
     }
 }
+ */

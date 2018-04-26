@@ -7,9 +7,15 @@ export class Player extends Prefab {
     jumping_speed: any;
     bouncing: any;
     cursors: any;
+    weapon: any;
+    fireButton: any;
+    boolSpeed = 1500;
+    walking_anim: string;
+    idol_anim: string;
+    bullet_sprite: string;
 
-    constructor(game_state, position, properties) {
-        super(game_state, position, properties);
+    constructor(game_state, position, properties, texture_name) {
+        super(game_state, position, properties, texture_name);
         
         this.walking_speed = +properties.walking_speed;
         this.jumping_speed = +properties.jumping_speed;
@@ -17,35 +23,40 @@ export class Player extends Prefab {
         
         this.game_state.game.physics.arcade.enable(this);
         this.body.collideWorldBounds = true;
-        
-        this.animations.add("walking", [0, 1, 2, 1], 6, true);
-        
-        this.frame = 3;
+
+        this.body.setSize(35, 90, 35, 0);
+
+        this.scale.setTo(0.6, 0.6);      
         
         this.anchor.setTo(0.5);
         
         this.cursors = this.game_state.game.input.keyboard.createCursorKeys();
+        this.fireButton = this.game_state.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
     };
 
     update() {
-        this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision);
-        this.game_state.game.physics.arcade.collide(this, this.game_state.groups.enemies, this.hit_enemy, null, this);
+
+        
+        this.game_state.game.physics.arcade.collide(this, this.game_state.layers.Ground);
+        this.game_state.game.physics.arcade.collide(this, this.game_state.groups.enemies, this.hit_player, null, this);
+        this.game_state.game.physics.arcade.overlap(this.weapon.bullets, this.game_state.groups.enemies, this.hit_enemy, null, this);
         
         if (this.cursors.right.isDown && this.body.velocity.x >= 0) {
             // move right
             this.body.velocity.x = this.walking_speed;
-            this.animations.play("walking");
-            this.scale.setTo(-1, 1);
+            this.animations.play(this.walking_anim);
+            this.scale.setTo(0.6, 0.6);
+            this.weapon.bulletSpeed = this.boolSpeed;
         } else if (this.cursors.left.isDown && this.body.velocity.x <= 0) {
             // move left
             this.body.velocity.x = -this.walking_speed;
-            this.animations.play("walking");
-            this.scale.setTo(1, 1);
+            this.animations.play(this.walking_anim);
+            this.scale.setTo(-0.6, 0.6);
+            this.weapon.bulletSpeed = -this.boolSpeed;
         } else {
             // stop
             this.body.velocity.x = 0;
-            this.animations.stop();
-            this.frame = 3;
+            this.animations.play(this.idol_anim);
         }
         
         // jump only if touching a tile
@@ -57,9 +68,25 @@ export class Player extends Prefab {
         if (this.bottom >= this.game_state.game.world.height) {
             this.game_state.restart_level();
         }
+
+        if (this.fireButton.isDown)
+    {
+        this.weapon.fire();
+    }
     };
     
-    hit_enemy(player, enemy) {
+    hit_enemy(weapon, enemy) {
+        console.log('попал');
+        enemy.kill();
+        weapon.kill();
+    }
+
+    hit_player(player, enemy) {
+        this.game_state.restart_level();
+    }
+
+    
+    /* hit_enemy(player, enemy) {
         // if the player is above the enemy, the enemy is killed, otherwise the player dies
         if (enemy.body.touching.up) {
             enemy.kill();
@@ -67,5 +94,24 @@ export class Player extends Prefab {
         } else {
             this.game_state.restart_level();
         }
-    };
+     }; */
+
+    createWeapon(playerObj, bullet_sprite) { 
+        let weapon;
+    
+        weapon = this.game_state.add.weapon(10, bullet_sprite);
+      //  The bullet will be automatically killed when it leaves the world bounds
+        weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    
+        //  The speed at which the bullet is fired
+        weapon.bulletSpeed = this.boolSpeed;
+    
+        //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+        weapon.fireRate = 500;
+    
+        weapon.trackSprite(playerObj, 35, 0, true);
+
+        return weapon;
+    
+      }
 }

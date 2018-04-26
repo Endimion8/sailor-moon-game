@@ -5,8 +5,8 @@ export class Goal extends Prefab {
 
     next_level: any;
 
-    constructor(game_state, position, properties) {
-    super(game_state, position, properties);
+    constructor(game_state, position, properties, texture_name) {
+    super(game_state, position, properties, texture_name);
         
         this.next_level = properties.next_level;
         
@@ -16,7 +16,7 @@ export class Goal extends Prefab {
     };
     
     update() {
-        this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision);
+        this.game_state.game.physics.arcade.collide(this, this.game_state.layers.Ground);
         this.game_state.game.physics.arcade.overlap(this, this.game_state.groups.players, this.reach_goal, null, this);
     };
     
