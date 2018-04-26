@@ -1433,7 +1433,7 @@ var AuthService = (function () {
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
         headers.append('Content-Type', 'application/json');
-        return this.http.post('users/register', user, { headers: headers }) // http://localhost:3000/
+        return this.http.post('users/register', user, { headers: headers })
             .map(function (res) { return res.json(); });
     };
     AuthService.prototype.authenticateUser = function (user) {
@@ -1507,7 +1507,7 @@ var SocketService = (function () {
     function SocketService(authService) {
         this.authService = authService;
         this.url = 'http://localhost:3000';
-        this.host = window.location.protocol + '//' + window.location.hostname + ':' + 3000;
+        this.host = window.location.protocol + '//' + window.location.hostname + ':' + 8080;
         // this.socket = io();  //this.host
         // this.socket.on("connect", () => this.connected());
         // this.socket.on("disconnect", () => this.disconnected());
