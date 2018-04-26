@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class SocketService {
     private url = 'http://localhost:3000';
-    private host: string = window.location.protocol + '//' + window.location.hostname + ':' + 3000;
+    private host: string = window.location.protocol + '//' + window.location.hostname + ':' + 8080;
     private socket: any;
 
     userID: any;
