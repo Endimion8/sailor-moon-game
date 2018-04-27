@@ -15,6 +15,10 @@ interface PlayersObject {
   playersObj: Array<any>;
 }
 
+/**
+ * Основное "активное" состояние игры.
+ */
+
 @NgModule({
   imports: [
     CommonModule
@@ -66,8 +70,8 @@ export class TiledStateModule extends Phaser.State {
 
       this.start_pos = {"x": this.start_x + (this.map.tileHeight / 2), "y": this.start_y - (this.map.tileHeight / 2)};
 
-      this.socketService.askNewPlayerGame(this.start_pos);
 
+      //  Подписываемся на события с сервера
       this.socketService.onNewPlayerGame().subscribe( (playerInfo) => {
         this.addNewPlayerGame(playerInfo);
       });
@@ -83,6 +87,9 @@ export class TiledStateModule extends Phaser.State {
       this.socketService.onRemovePlayerGame().subscribe(playerID => {
         this.removePlayerGame(playerID);
        });
+
+       // Запрашиваем создание нового игрока
+       this.socketService.askNewPlayerGame(this.start_pos);
   };
   
   create() {
@@ -139,16 +146,16 @@ export class TiledStateModule extends Phaser.State {
       // tiled coordinates starts in the bottom left corner
       position = {"x": object.x + (this.map.tileHeight / 2), "y": object.y - (this.map.tileHeight / 2)};
 
-      // create object according to its type
+      // create object according to its type. Локальное создание объектов. Пока без мультиплеера.
       switch (object.type) {
       case "player":
-          prefab = new Mars(this, this.start_pos, this.player_properties, '', true);  // здесь будем отправлять запрос на сервер, чтобы создать объекты
+          prefab = new Mars(this, this.start_pos, this.player_properties, '', true);
           break;
       case "ground_enemy":
-          prefab = new Enemy(this, position, object.properties, object.properties.texture); // на сервере проверим, были ли объекты уже созданы
+          prefab = new Enemy(this, position, object.properties, object.properties.texture); 
           break;
       case "flying_enemy":
-          prefab = new FlyingEnemy(this, position, object.properties, object.properties.texture);  // если да,то повторно создавать не будем
+          prefab = new FlyingEnemy(this, position, object.properties, object.properties.texture);  
           break;
       case "goal":
           prefab = new Goal(this, position, object.properties, object.properties.texture);
@@ -162,6 +169,8 @@ export class TiledStateModule extends Phaser.State {
       this.game.state.restart(true, false, this.level_data);
   };
 
+  // На данном этапе пользователь своего игрока видит как одного персонажа, 
+  // а все остальные для него отображаются как второй персонаж, чтобы можно было себя отличить
   addNewPlayerGame(playerInfo) {   // будем вызывать, когда сервер попросит создать игрока
     console.log('Создаем игрока');
     console.log(playerInfo.id);
@@ -174,18 +183,15 @@ export class TiledStateModule extends Phaser.State {
     }
   }
 
+  // будем вызывать, когда сервер попросит удалить игрока, не удаляет объект правильно, доработать
   removePlayerGame(playerID) {
     console.log('Удалили пользователя');
     this.players.playersObj[this.players.playersIDs.indexOf(playerID)].kill();
-
-    console.log(this.players.playersObj[this.players.playersIDs.indexOf(playerID)]);
 
     if (this.players.playersObj[this.players.playersIDs.indexOf(playerID)]) {
 
       delete this.players.playersObj[this.players.playersIDs.indexOf(playerID)];
     }
     delete this.players.playersIDs[this.players.playersIDs.indexOf(playerID)];
-    console.log(this.players.playersObj[this.players.playersIDs.indexOf(playerID)]);
-
   }
 }

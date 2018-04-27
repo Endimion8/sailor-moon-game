@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+/**
+ * Загружаем основные ассеты: картинки, листы спрайтов и прочее.
+ */
+
 @NgModule({
   imports: [
     CommonModule
@@ -28,7 +32,7 @@ export class LoadingStateModule extends Phaser.State {
       let asset;
       assets = this.level_data.assets;
       for (asset_key in assets) { // load assets according to asset key
-          if (assets.hasOwnProperty(asset_key)) {  //итерируемся только по собственным свойствам объекта
+          if (assets.hasOwnProperty(asset_key)) { 
               asset = assets[asset_key];
               switch (asset.type) {
               case "image":

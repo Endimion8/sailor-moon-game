@@ -4,6 +4,9 @@ import * as io from 'socket.io-client';
 
 import { AuthService } from './auth.service';
 
+/**
+ * Сервис, реализующий взаимодействие пользователей. Дорабатываю.
+ */
 
 @Injectable()
 export class SocketService {
@@ -14,31 +17,8 @@ export class SocketService {
     userID: any;
 
     constructor(private authService: AuthService) {
-        // this.socket = io();  //this.host
-        // this.socket.on("connect", () => this.connected());
-        // this.socket.on("disconnect", () => this.disconnected());
-        // this.socket.on("error", (error: string) => {
-        //     console.log(`ERROR: "${error}" (${this.host})`);
-        // });
-    }
-/*
-    connect () {
-        this.socket.connect();
     }
 
-    disconnect () {
-        this.socket.disconnect();
-    } */
-
-    /* emit(chanel, data) {
-        return new Observable<any>(observer => {
-            console.log(`emit to ${chanel}: data`);
-            this.socket.emit(chanel,(data) => {
-                    observer.next(data);
-            });
-        });
-    }
-*/
     connect() {
       this.socket = io(this.host);
       this.socket.on('disconnect', () => {  // При дисконнекте будем просить удалить нас из активных
@@ -60,44 +40,35 @@ export class SocketService {
             });
         });
     }
-/*
-    private connected() {
-        console.log('Connected');
-    }
 
-    private disconnected() {
-        console.log('Disconnected');
-    } */
-
-    onNewPlayer() {                 // Подписываемся на событие с сервера, что залогинился новый пользователь
+    // Подписываемся на событие с сервера, что залогинился новый пользователь
+    onNewPlayer() {                 
       return this.on('newPlayer');
     }
 
-    onRemovePlayer() {              // Подписываемся на событие с сервера, что другой пользователь разлогинился
+    // Подписываемся на событие с сервера, что другой пользователь разлогинился
+    onRemovePlayer() {              
       return this.on('removePlayer');
     }
 
-    onAllPlayers() {               // Подписываемся на событие с сервера, чтобы получить всех активных пользователей при подключении
+    // Подписываемся на событие с сервера, чтобы получить всех активных пользователей при подключении
+    onAllPlayers() {               
       return this.on('allPlayers');
     }
 
-    askNewPlayer() {              // Делаем запрос на добавление нас к активным пользователям
-        this.authService.getProfile().subscribe(profile => {  //  Получаем данные о самом пользователе, в том числе и приватные
-            if (!profile.user) { // Если мы не залогиненные, то ничего не делаем
-                console.log(`Наш юзер: ${profile.user}`);
+    // Делаем запрос на добавление нас к активным пользователям
+    askNewPlayer() {     
+        //  Получаем данные о самом пользователе, в том числе и приватные         
+        this.authService.getProfile().subscribe(profile => {  
+            if (!profile.user) { 
                   return;
                 };
 
                 this.userID = profile.user._id;
-                console.log(`Наш юзер: ${profile.user}`);
-                console.log(`Наш юзерID: ${profile.user._id}`);
                 const playerInfo = {name: profile.user.name, id: profile.user._id};
-                console.log(playerInfo);
                 this.socket.emit('askNewPlayer', playerInfo);
-                console.log('Запрос на логин отправлен');
           },
            err => {
-             console.log('Ошибочка');
              console.log(err);
              return false;
            });
@@ -106,30 +77,33 @@ export class SocketService {
 
     askAllPlayers() {
       this.socket.emit('askAllPlayers');
-      console.log('Попросили всех активных');
     }
 
-    askToRemoveAs() {       // Когда разлогинимся, попросим сервер удалить нас из списка активных
-      this.socket.emit('askToRemove');
+    // Когда разлогинимся, попросим сервер удалить нас из списка активных
+    askToRemoveAs() {       
     }
 
     askNewPlayerGame(start_pos) {
         this.socket.emit('askNewPlayerGame', start_pos);
     }
 
-    onNewPlayerGame() {                 // Подписываемся на событие с сервера, что вошел новый игрок
+    // Подписываемся на событие с сервера, что вошел новый игрок
+    onNewPlayerGame() {                 
         return this.on('newPlayerGame');
       }
 
-    onAllPlayersGame() {               // Подписываемся на событие с сервера, чтобы получить всех активных пользователей при подключении
+      // Подписываемся на событие с сервера, чтобы получить всех активных пользователей при подключении
+    onAllPlayersGame() {               
       return this.on('allPlayersGame');
     }
 
-    askToRemoveAsGame() {       // Когда выходим из вкладки с игрой, попросим сервер удалить нас из списка активных
+    // Когда выходим из вкладки с игрой, попросим сервер удалить нас из списка активных
+    askToRemoveAsGame() {
         this.socket.emit('askToRemoveGame');
       }
 
-    onRemovePlayerGame() {              // Подписываемся на событие с сервера, что другой игрок вышел из игры
+    // Подписываемся на событие с сервера, что другой игрок вышел из игры
+    onRemovePlayerGame() {              
       return this.on('removePlayerGame');
     }
 

@@ -1,11 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import  *  as Phaser from 'phaser-ce';
-import { Player } from '../../classes/prefabs/player';
 import { Enemy } from '../../classes/prefabs/enemy';
 import { FlyingEnemy } from '../../classes/prefabs/flying-enemy';
 import { Goal } from '../../classes/prefabs/goal';
 
-import 'phaser-tilemap-plus';
 
 import {SocketService} from '../../services/socket.service';
 import { Mercury } from '../../classes/prefabs/mercury';
@@ -14,11 +11,10 @@ import { TiledStateModule } from '../../classes/states/tiled-state/tiled-state.m
 import { LoadingStateModule } from '../../classes/states/loading-state/loading-state.module';
 import { BootStateModule } from '../../classes/states/boot-state/boot-state.module';
 
-//import { BootState } from '../../classes/states/boot-state';
-//import { LoadingState } from '../../classes/states/loading-state';
-//import { TiledState } from '../../classes/states/tiled-state';
 
-
+/**
+ * Компонент, отвечающий за игру. В нем на элементе canvas отрисовывается игра.
+ */
 
 @Component({
   selector: 'app-game',
@@ -27,14 +23,10 @@ import { BootStateModule } from '../../classes/states/boot-state/boot-state.modu
 })
 export class GameComponent implements OnInit, OnDestroy {
 
-  title = 'Angular Phaser';
-
   game: Phaser.Game;
-  //client: any;      
- // playerMap: any;
 
   constructor(private socketService: SocketService) {
-    this.game = new Phaser.Game(1920, 768, Phaser.AUTO, 'game-area');  // 480, 280
+    this.game = new Phaser.Game(960, 560, Phaser.AUTO, 'game-area');
   }
 
   ngOnInit() {
@@ -45,8 +37,8 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.game.destroy();
     this.socketService.askToRemoveAsGame();
+    this.game.destroy();
   }
 
 }

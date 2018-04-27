@@ -21,13 +21,8 @@ export class BootStateModule extends Phaser.State {
 
   
   create() {
-      let level_text; 
+      let level_text;
       let level_data;
-
-     
-      // scale the game 2x
-     // this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;  
-     // this.scale.setUserScale(2, 2);
 
       // enable crisp rendering
       this.game.renderer.renderSession.roundPixels = true;  

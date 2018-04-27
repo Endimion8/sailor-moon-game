@@ -4,6 +4,10 @@ import { HttpModule } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { tokenNotExpired } from 'angular2-jwt';
 
+/**
+ * Сервис, реализующий взаимодействие пользователей. Дорабатываю.
+ */
+
 @Injectable()
 export class AuthService {
   authToken: any;

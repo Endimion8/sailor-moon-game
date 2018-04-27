@@ -37,6 +37,7 @@ export class ProfileComponent implements OnInit {
        return false;
      });
 
+     // В профиле отображаем всех активных пользователей, поэтому подписываемся на сообщения с сервера
      this.socketService.onNewPlayer().subscribe(playerInfo => {
        this.addNewPlayer(playerInfo);
      });
@@ -62,6 +63,8 @@ export class ProfileComponent implements OnInit {
     this.playersNames = this.players.playersNames;
   }
 
+
+  // доработать удаление
   removePlayer(playerID) {
     delete this.players.playersNames[this.players.playersIDs.indexOf(playerID)];
     delete this.players.playersIDs[this.players.playersIDs.indexOf(playerID)];

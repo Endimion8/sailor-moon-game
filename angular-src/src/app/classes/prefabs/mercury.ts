@@ -1,5 +1,4 @@
 import  *  as Phaser from 'phaser-ce';
-import { Player } from './player';
 import { PlayerModule } from './player/player.module';
 
 export class Mercury extends PlayerModule {
