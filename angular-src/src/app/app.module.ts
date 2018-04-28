@@ -27,8 +27,6 @@ import { BootStateModule } from './classes/states/boot-state/boot-state.module';
 import { LoadingStateModule } from './classes/states/loading-state/loading-state.module';
 
 
-//import {FlashMessagesService} from 'angular2-flash-messages';
-
 const appRouts: Routes = [
   {path: '', component: HomeComponent},
   {path: 'register', component: RegisterComponent},
